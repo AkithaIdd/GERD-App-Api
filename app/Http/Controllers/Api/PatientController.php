@@ -24,6 +24,7 @@ class PatientController extends Controller
     // }
 
     public function getPatients(Request $request)
+        //test
     {
         $data = $request->get('getPatient');
 
