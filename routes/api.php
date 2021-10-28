@@ -27,6 +27,8 @@ Route::group(['middleware'=>['auth:sanctum']],function(){
     Route::get("/user",[ApiController::class,'getUser']);
     Route::post("/addPatient",[PatientController::class,'addPatient']);
     Route::get("/getPatient",[PatientController::class,'getPatients']);
+    Route::post("/getPatientRecords",[PatientController::class,'getPatientRecords']);
+    Route::post("/addPatientRecord",[PatientController::class,'addPatientRecord']);
 });
 
 

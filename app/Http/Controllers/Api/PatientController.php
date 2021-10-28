@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\Patient;
+use App\Models\PatientRecord;
 use Validator;
 use Illuminate\Http\Request;
 
@@ -30,11 +31,53 @@ class PatientController extends Controller
 
         $search_patient = Patient::where('name', 'like' , "%{$data}%")
                                     ->orWhere('phoneNumber', 'like' , "%{$data}%")
-                                    ->get();
+                                    ->get(); 
 
         return response()->json([
             'patientList' => $search_patient
         ]);
+    }
+    public function getPatientRecords(Request $request)
+        //test
+    {
+        $data = $request->get('getPatientRecords');
+
+        $search_patient_record = PatientRecord::where('patientId', 'like' , "%{$data}%")
+                                    ->get(); 
+
+        return response()->json([
+            'patientRecordList' => $search_patient_record
+        ]);
+    }
+    public function addPatientRecord(Request $request)
+    {
+        $patientValidator = Validator::make($request->all(),[
+            "patientId"=>"required",
+            "date_of_test" => "required",
+            "age_of_onset" => "required",
+            "length_of_les" => "required",
+        ]);
+
+        if($patientValidator->fails()){
+            return response()->json([
+               'status' => 400,
+               'message' => $patientValidator->messages()->first(),
+            //    'errors' => $patientValidator->errors(),
+            ]);
+        }
+
+        $patientrecord = new PatientRecord();
+        $patientrecord->patientId = $request->patientId;
+        $patientrecord->date_of_test = $request->date_of_test;
+        $patientrecord->age_of_onset = $request->age_of_onset;
+        $patientrecord->length_of_les = $request->length_of_les;
+        $patientrecord->save();
+
+        return response()->json([
+            'status' => 200,
+            'message' => "Patient Record Added"
+         ]);
+
     }
     public function addPatient(Request $request)
     {
@@ -47,8 +90,8 @@ class PatientController extends Controller
         if($patientValidator->fails()){
             return response()->json([
                'status' => 400,
-               'message' => "Bad Request",
-               'errors' => $patientValidator->errors(),
+               'message' => $patientValidator->messages()->first(),
+            //    'errors' => $patientValidator->errors(),
             ]);
         }
 

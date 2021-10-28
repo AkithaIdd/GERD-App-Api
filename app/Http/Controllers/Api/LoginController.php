@@ -53,7 +53,9 @@ class LoginController extends Controller
         return response()->json([
             'status' => 200,
             'message' => "User Logged",
-            $user]);
+            'user'=>$user['name'],
+            'token'=>$token,
+            ]);
 
     }
 }
