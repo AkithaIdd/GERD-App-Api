@@ -17,6 +17,7 @@ class PatientTable extends Migration
        Schema::create('patients',function(Blueprint $table){
 
         $table->id()->startingValue('1200');
+        $table->integer('doctor_id');
         $table->string('name');
         $table->date('date_of_birth');
         $table->integer('age');

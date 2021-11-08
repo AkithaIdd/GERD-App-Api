@@ -27,10 +27,16 @@ class PatientController extends Controller
     public function getPatients(Request $request)
         //test
     {
-        $data = $request->get('getPatient');
+        $doctorId = $request->get('doctorId');
+        $searchTerm = $request->get('searchTerm');
 
-        $search_patient = Patient::where('name', 'like' , "%{$data}%")
-                                    ->orWhere('phoneNumber', 'like' , "%{$data}%")
+        $search_patient = Patient::where('doctor_id', '=' , "$doctorId")
+                                    // ->andWhere('name','like',"%{$searchTerm}%")
+                                    // ->andWhere('phoneNumber', 'like' , "%{$searchTerm}%")
+                                    ->where(function ($query) use ($searchTerm) {
+                                        $query->where('name','like',"%{$searchTerm}%")
+                                              ->orWhere('phoneNumber', 'like' , "%{$searchTerm}%");
+                                    })
                                     ->get(); 
 
         return response()->json([
@@ -40,7 +46,7 @@ class PatientController extends Controller
     public function getPatientRecords(Request $request)
         //test
     {
-        $data = $request->get('getPatientRecords');
+        $data = $request->get('patientId');
 
         $search_patient_record = PatientRecord::where('patientId', '=' , "$data")
                                     ->get(); 
@@ -82,6 +88,7 @@ class PatientController extends Controller
     public function addPatient(Request $request)
     {
         $patientValidator = Validator::make($request->all(),[
+            "doctor_id"=>"required",
             "name" => "required",
             "date_of_birth" => "required",
             "phoneNumber" => "required|min:10|max:10|unique:patients"
@@ -98,6 +105,7 @@ class PatientController extends Controller
 
         $patient = new Patient();
         $patient->name = $request->name;
+        $patient->doctor_id = $request->doctor_id;
         $patient->date_of_birth = $request->date_of_birth;
         $patient->phoneNumber = $request->phoneNumber;
         $patient->age = $request->age;

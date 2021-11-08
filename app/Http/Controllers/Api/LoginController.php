@@ -14,6 +14,7 @@ class LoginController extends Controller
      * Login User
      * @param Request $request
      * @return User $user with token
+     * @return Id $id with token
      */
 
     public function login(Request $request)
@@ -55,6 +56,7 @@ class LoginController extends Controller
             'message' => "User Logged",
             'user'=>$user['name'],
             'token'=>$token,
+            'id'=>$user->id,
             ]);
 
     }
