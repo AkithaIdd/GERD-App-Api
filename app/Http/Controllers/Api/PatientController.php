@@ -42,7 +42,7 @@ class PatientController extends Controller
     {
         $data = $request->get('getPatientRecords');
 
-        $search_patient_record = PatientRecord::where('patientId', 'like' , "%{$data}%")
+        $search_patient_record = PatientRecord::where('patientId', '=' , "$data")
                                     ->get(); 
 
         return response()->json([
@@ -91,6 +91,7 @@ class PatientController extends Controller
             return response()->json([
                'status' => 400,
                'message' => $patientValidator->messages()->first(),
+                
             //    'errors' => $patientValidator->errors(),
             ]);
         }
@@ -104,8 +105,42 @@ class PatientController extends Controller
 
         return response()->json([
             'status' => 200,
-            'message' => "Patient Added"
+            'message' => "Patient Added",
+            'patientId' => $patient->id,
          ]);
+
+    }
+
+    public function updatePatient(Request $request,$id)
+    {
+
+        $patientValidator = Validator::make($request->all(),[
+          
+            "phoneNumber" => "required|min:10|max:10|unique:patients"
+        ]);
+
+        if($patientValidator->fails()){
+            return response()->json([
+               'status' => 400,
+               'message' => $patientValidator->messages()->first(),
+            ]);
+        }
+
+        $patient = Patient::find($id);
+        if($patient)
+        {
+            $patient->name = $request->name;
+            $patient->date_of_birth = $request->date_of_birth;
+            $patient->phoneNumber = $request->phoneNumber;
+            $patient->age = $request->age;
+            $patient->update();
+
+            return response()->json([
+                'status' => 200,
+                'message' => "Patient Updated",
+                'patientId' => $patient->id,
+             ]);
+        }
 
     }
 }
