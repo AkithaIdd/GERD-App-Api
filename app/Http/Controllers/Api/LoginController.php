@@ -28,14 +28,14 @@ class LoginController extends Controller
         if($validator->fails()){
             return response()->json([
                'status' => 400,
-               'message' => "Bad Request"
+               'message' => "Missing Email Or Password"
             ]);
         }
 
         if(!Auth::attempt($request->only('email','password'))){
             return response()->json([
                 'status' => 401,
-                'message' => "Unauthorized"
+                'message' => "Invalid Email Or Password"
             ]);
 
         }
@@ -45,7 +45,7 @@ class LoginController extends Controller
         if(!Auth::attempt($credentials)){
             return response()->json([
                 'status' => 403,
-                'message' => "InActive User"
+                'message' => "User Has Not Been Activated"
             ]);
         }
         $user = User::where("email",$request->email)->select('id','name','email')->first();//first means first user that = to email
