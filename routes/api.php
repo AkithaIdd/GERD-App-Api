@@ -30,7 +30,7 @@ Route::group(['middleware'=>['auth:sanctum']],function(){
     Route::post("/getPatientRecords",[PatientController::class,'getPatientRecords']);
     Route::post("/addPatientRecord",[PatientController::class,'addPatientRecord']);
     Route::put("/updatePatient/{id}",[PatientController::class,'updatePatient']);
-    Route::put("/updatePassword",[ApiController::class,'updatePassword']);
+    Route::post('/change-password', [LoginController::class,'change_password']);
 });
 
 

@@ -7,6 +7,7 @@ use App\Models\PatientRecord;
 use Validator;
 use Illuminate\Http\Request;
 
+
 class PatientController extends Controller
 {
     // public function getPatient(Request $request , Patient $patient)
@@ -27,6 +28,15 @@ class PatientController extends Controller
     public function getPatients(Request $request)
         //test
     {
+        // $data = $request->get('getPatient');
+
+        // $search_patient = Patient::where('name', 'like' , "%{$data}%")
+        //                             ->orWhere('phoneNumber', 'like' , "%{$data}%")
+        //                             ->get(); 
+
+        // return response()->json([
+        //     'patientList' => $search_patient
+        // ]);
         $doctorId = $request->get('doctorId');
         $searchTerm = $request->get('searchTerm');
 
@@ -46,7 +56,7 @@ class PatientController extends Controller
     public function getPatientRecords(Request $request)
         //test
     {
-        $data = $request->get('patientId');
+        $data = $request->get('getPatientRecords');
 
         $search_patient_record = PatientRecord::where('patientId', '=' , "$data")
                                     ->get(); 
@@ -120,14 +130,31 @@ class PatientController extends Controller
     }
 
     public function updatePatient(Request $request,$id)
-    {
+    { 
+        $phone = $request->get('phoneNumber');
+
+        // $items = Patient::select('phoneNumber')
+        //      ->where('id', $id)
+        //      ->first();
+        error_log("id".$id);
+        $phoneNumOnDb = Patient::where('id', $id)->
+        pluck('phoneNumber')
+        ->first();
+
+        error_log($phone);
+        error_log("dd".$phoneNumOnDb);
+       
 
         $patientValidator = Validator::make($request->all(),[
           
             "phoneNumber" => "required|min:10|max:10|unique:patients"
         ]);
-
-        if($patientValidator->fails()){
+        if($phone==$phoneNumOnDb){
+            // return response()->json([
+            //     'status' => 400,
+            //     'message' => "phone",
+            //  ]);
+        }else if($patientValidator->fails()){
             return response()->json([
                'status' => 400,
                'message' => $patientValidator->messages()->first(),

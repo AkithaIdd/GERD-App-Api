@@ -7,6 +7,7 @@ use Auth;
 use Arr;
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use Illuminate\Support\Facades\Hash;
 use Validator;
 class LoginController extends Controller
 {
@@ -60,4 +61,41 @@ class LoginController extends Controller
             ]);
 
     }
+
+
+    public function change_password(Request $request)
+{
+    $input = $request->all();
+    // $userid = Auth::attempt($request)->user()->id;
+    $userid = $request->user()->id;
+    error_log("id".$userid);
+    $rules = array(
+        'old_password' => 'required',
+        'new_password' => 'required|min:6',
+        'confirm_password' => 'required|same:new_password',
+    );
+    $validator = Validator::make($input, $rules);
+    if ($validator->fails()) {
+        $arr = array("status" => 400, "message" => $validator->errors()->first());
+    } else {
+        try {
+            if ((Hash::check(request('old_password'), Auth::user()->password)) == false) {
+                $arr = array("status" => 400, "message" => "Check your old password.");
+            } else if ((Hash::check(request('new_password'), Auth::user()->password)) == true) {
+                $arr = array("status" => 400, "message" => "Please enter a password which is not similar then current password.", "data" => array());
+            } else {
+                User::where('id', $userid)->update(['password' => Hash::make($input['new_password'])]);
+                $arr = array("status" => 200, "message" => "Password updated successfully.");
+            }
+        } catch (\Exception $ex) {
+            if (isset($ex->errorInfo[2])) {
+                $msg = $ex->errorInfo[2];
+            } else {
+                $msg = $ex->getMessage();
+            }
+            $arr = array("status" => 400, "message" => $msg);
+        }
+    }
+    return \Response::json($arr);
+}
 }
