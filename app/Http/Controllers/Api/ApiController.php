@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use Validator;
+use Auth;
 class ApiController extends Controller
 {
     /**
@@ -31,7 +32,7 @@ class ApiController extends Controller
             "name" => "required",
             "email" => "required|email|unique:users",
             "password" => "required|min:8",
-            "phoneNumber" => "required|min:10|max:10|unique:users"
+            "phoneNumber" => "required|unique:users"
         ]);
 
         if($validator->fails()){
@@ -54,6 +55,46 @@ class ApiController extends Controller
             'status' => 200,
             'message' => "User Registered"
          ]);
+
+    }
+    public function updatePassword(Request $request)
+    {
+
+        $passwordValidator = Validator::make($request->all(),[
+          
+            "newPassword" => "required|min:8",
+            "password"=>"required",
+            "id"=>"required",
+            "email"=>"required",
+        ]);
+
+        if($passwordValidator->fails()){
+            return response()->json([
+               'status' => 400,
+               'message' => $passwordValidator->messages()->first(),
+            ]);
+        }
+
+        if(!Auth::attempt($request->only('email','password'))){
+            return response()->json([
+                'status' => 401,
+                'message' => "Invalid Password"
+            ]);
+
+        }
+        $credentials = $request->only('password');
+
+        $user = User::find($id);
+        if($user)
+        {
+            $user->password = bcrypt($request->newPassword);
+            $user->update();
+
+            return response()->json([
+                'status' => 200,
+                'message' => "Password Updated"
+             ]);
+        }
 
     }
 }
