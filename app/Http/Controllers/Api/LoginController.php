@@ -49,7 +49,7 @@ class LoginController extends Controller
                 'message' => "User Has Not Been Activated"
             ]);
         }
-        $user = User::where("email",$request->email)->select('id','name','email')->first();//first means first user that = to email
+        $user = User::where("email",$request->email)->select('id','name','email','phoneNumber')->first();//first means first user that = to email
         $token = $user->createToken('token_name')->plainTextToken;
         Arr::add($user,'token',$token);
         return response()->json([
@@ -57,6 +57,8 @@ class LoginController extends Controller
             'message' => "User Logged",
             'user'=>$user['name'],
             'token'=>$token,
+            'email'=>$user['email'],
+            'phoneNumber'=>$user['phoneNumber'],
             'id'=>$user->id,
             ]);
 
@@ -64,14 +66,14 @@ class LoginController extends Controller
 
 
     public function change_password(Request $request)
-{
+    {
     $input = $request->all();
     // $userid = Auth::attempt($request)->user()->id;
     $userid = $request->user()->id;
     error_log("id".$userid);
     $rules = array(
         'old_password' => 'required',
-        'new_password' => 'required|min:6',
+        'new_password' => 'required|min:8',
         'confirm_password' => 'required|same:new_password',
     );
     $validator = Validator::make($input, $rules);
@@ -97,5 +99,52 @@ class LoginController extends Controller
         }
     }
     return \Response::json($arr);
-}
+    }
+    public function updateProfile(Request $request,$id)
+    { 
+        $email = $request->get('email');
+
+        // $items = Patient::select('phoneNumber')
+        //      ->where('id', $id)
+        //      ->first();
+        error_log("id".$id);
+        $emailOnDb = User::where('id', $id)->
+        pluck('email')
+        ->first();
+
+        error_log($email);
+        error_log("dd".$emailOnDb);
+       
+
+        $validator = Validator::make($request->all(),[
+          
+            "email" => "required|unique:users|email"
+        ]);
+        if($email==$emailOnDb){
+            // return response()->json([
+            //     'status' => 400,
+            //     'message' => "success",
+            //  ]);
+        }else if($validator->fails()){
+            return response()->json([
+               'status' => 400,
+               'message' => $validator->messages()->first(),
+            ]);
+        }
+
+        $user = User::find($id);
+        if($user)
+        {
+            $user->name = $request->name;
+            $user->email = $request->email;
+            $user->phoneNumber = $request->phoneNumber;
+            $user->update();
+
+            return response()->json([
+                'status' => 200,
+                'message' => "User Updated",
+             ]);
+        }
+
+    }
 }
