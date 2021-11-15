@@ -6,6 +6,7 @@ use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use App\Notifications\ResetPasswordNotification;
 use Laravel\Sanctum\HasApiTokens;
 
 
@@ -45,4 +46,12 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
         
     ];
+
+    public function sendPasswordResetNotification($token)
+    {
+
+        $url = 'http://192.168.8.212:8082/forgot_password?token='.$token;
+
+        $this->notify(new ResetPasswordNotification($url));
+    }
 }

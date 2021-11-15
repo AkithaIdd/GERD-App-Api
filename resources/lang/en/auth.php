@@ -16,5 +16,11 @@ return [
     'failed' => 'These credentials do not match our records.',
     'password' => 'The provided password is incorrect.',
     'throttle' => 'Too many login attempts. Please try again in :seconds seconds.',
+    'something_went_wrong' => 'Ops! Something went wrong.',
+    'invalid_credentials' => 'Invalid email or password.',
+    'validation_error' => 'Validation Error',
+    'invalid_email_verification_url' => 'Invalid url provided.',
+    'email_already_verified' => 'You have already verified email.',
+    'invalid_reset_password_token' => 'Invalid token provided.'
 
 ];

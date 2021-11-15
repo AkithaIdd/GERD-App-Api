@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\ApiController;
 use App\Http\Controllers\Api\LoginController;
 use App\Http\Controllers\Api\PatientController;
+use App\Http\Controllers\Api\NewPasswordController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -22,6 +23,9 @@ use App\Http\Controllers\Api\PatientController;
 // });
 Route::post("/register",[ApiController::class,'register']);
 Route::post("/login",[LoginController::class,'login']);
+Route::post('/forgot-password', [NewPasswordController::class, 'forgotPassword']);
+Route::post('/reset-password', [NewPasswordController::class, 'reset']);
+
 
 Route::group(['middleware'=>['auth:sanctum']],function(){
     Route::get("/user",[ApiController::class,'getUser']);
