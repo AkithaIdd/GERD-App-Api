@@ -6,6 +6,7 @@ use App\Http\Controllers\Api\ApiController;
 use App\Http\Controllers\Api\LoginController;
 use App\Http\Controllers\Api\PatientController;
 use App\Http\Controllers\Api\NewPasswordController;
+use App\Http\Controllers\Api\ImageController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -36,6 +37,8 @@ Route::group(['middleware'=>['auth:sanctum']],function(){
     Route::put("/updatePatient/{id}",[PatientController::class,'updatePatient']);
     Route::post('/change-password', [LoginController::class,'change_password']);
     Route::put("/updateProfile/{id}",[LoginController::class,'updateProfile']);
+    Route::post("/updateImage",[ImageController::class,'addimage']);
+    Route::get("/getImage/{id}",[ImageController::class,'getImage']);
 });
 
 
