@@ -29,14 +29,22 @@ class ImageController extends Controller
         // $image->doctor_id = $request->doctor_id;
 
         if ($request->hasFile('image')) {
-            
-            $path = $request->file('image')->store('images');
-            $image->uri = $path;
+
+            $file = $request->file('image');
+            $extension = $file->getClientOriginalExtension(); // you can also use file name
+            $fileName = time().'.'.$extension;
+            $path = public_path().'/assets/profileImages';
+            $uplaod = $file->move($path,$fileName);
+
+            $image->uri = $uplaod;          
+
+            // $path = $request->file('image')->store('images');
+            // $image->uri = $path;
         }
 
         $user = Image::updateOrCreate(
             ['doctor_id' => $request->doctor_id],
-            ['uri' =>  $path]
+            ['uri' =>  $fileName]
 
         );
         
@@ -56,11 +64,16 @@ class ImageController extends Controller
     {
         $doc_image = Image::where('doctor_id',"$id")->pluck('uri')->first();
         $file_basename = basename($doc_image);
-        $image_path = 'C:\xampp\htdocs\Login-app\login-app\storage\app\images\\'.$file_basename;
+        $path ='http://192.168.8.158:8083/assets/profileImages/';
+        $image_path = $path.$file_basename;
 
         $user = Image::where('doctor_id',"$id")->pluck('uri')->first();
         if($user !== null){
-            return Response::download($image_path);
+            // return Response::download($image_path);
+            return response()->json([
+                'status' => 200,
+                'imageUrl' => $image_path,
+             ]);
         }else{
             return response()->json([
                 'status' => 400,
