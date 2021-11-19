@@ -21,6 +21,7 @@ class PatientTable extends Migration
         $table->string('name');
         $table->date('date_of_birth');
         $table->integer('age');
+        $table->integer('age_of_onset');
         $table->integer('phoneNumber')->unique();
     
        });

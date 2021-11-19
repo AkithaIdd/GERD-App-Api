@@ -12,7 +12,8 @@ class PatientRecord extends Model
     protected $fillable = [
         'patientId',
         'date_of_test',
-        'age_of_onset',
+        // 'age_of_onset',
+        'age_of_patient',
         'length_of_les',
     ];
     public $timestamps = false;

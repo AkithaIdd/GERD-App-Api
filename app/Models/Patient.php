@@ -14,6 +14,7 @@ class Patient extends Model
         'doctor_id',
         'phoneNumber',
         'date_of_birth',
+        'age_of_onset',
         'age',
     ];
     public $timestamps = false;
