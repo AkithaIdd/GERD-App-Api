@@ -64,7 +64,7 @@ class ImageController extends Controller
     {
         $doc_image = Image::where('doctor_id',"$id")->pluck('uri')->first();
         $file_basename = basename($doc_image);
-        $path ='http://192.168.8.158:8083/assets/profileImages/';
+        $path ='http://192.168.8.110:8083/assets/profileImages/';
         $image_path = $path.$file_basename;
 
         $user = Image::where('doctor_id',"$id")->pluck('uri')->first();

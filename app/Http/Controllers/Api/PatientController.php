@@ -28,15 +28,7 @@ class PatientController extends Controller
     public function getPatients(Request $request)
         //test
     {
-        // $data = $request->get('getPatient');
-
-        // $search_patient = Patient::where('name', 'like' , "%{$data}%")
-        //                             ->orWhere('phoneNumber', 'like' , "%{$data}%")
-        //                             ->get(); 
-
-        // return response()->json([
-        //     'patientList' => $search_patient
-        // ]);
+       
         $doctorId = $request->get('doctorId');
         $searchTerm = $request->get('searchTerm');
 
@@ -54,12 +46,11 @@ class PatientController extends Controller
         ]);
     }
     public function getPatientRecords(Request $request)
-        //test
     {
         $data = $request->get('getPatientRecords');
 
-        $search_patient_record = PatientRecord::where('patientId', '=' , "$data")
-                                    ->get(); 
+        $search_patient_record = PatientRecord::where('patientId', "$data")
+                                    ->get()->reverse()->values(); 
 
         return response()->json([
             'patientRecordList' => $search_patient_record
@@ -70,7 +61,8 @@ class PatientController extends Controller
         $patientValidator = Validator::make($request->all(),[
             "patientId"=>"required",
             "date_of_test" => "required",
-            "age_of_onset" => "required",
+            // "age_of_onset" => "required",
+            "age_of_patient" => "required",
             "length_of_les" => "required",
         ]);
 
@@ -85,7 +77,8 @@ class PatientController extends Controller
         $patientrecord = new PatientRecord();
         $patientrecord->patientId = $request->patientId;
         $patientrecord->date_of_test = $request->date_of_test;
-        $patientrecord->age_of_onset = $request->age_of_onset;
+        // $patientrecord->age_of_onset = $request->age_of_onset;
+        $patientrecord->age_of_patient = $request->age_of_patient;
         $patientrecord->length_of_les = $request->length_of_les;
         $patientrecord->save();
 
@@ -101,6 +94,7 @@ class PatientController extends Controller
             "doctor_id"=>"required",
             "name" => "required",
             "date_of_birth" => "required",
+            "age_of_onset" => "required",
             "phoneNumber" => "required|min:10|max:10|unique:patients"
         ]);
 
@@ -117,6 +111,7 @@ class PatientController extends Controller
         $patient->name = $request->name;
         $patient->doctor_id = $request->doctor_id;
         $patient->date_of_birth = $request->date_of_birth;
+        $patient->age_of_onset = $request->age_of_onset;
         $patient->phoneNumber = $request->phoneNumber;
         $patient->age = $request->age;
         $patient->save();

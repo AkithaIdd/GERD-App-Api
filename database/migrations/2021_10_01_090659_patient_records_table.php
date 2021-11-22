@@ -18,7 +18,8 @@ class PatientRecordsTable extends Migration
             $table->id()->startingValue('1200');
             $table->integer('patientId');
             $table->date('date_of_test');
-            $table->integer('age_of_onset');
+            // $table->integer('age_of_onset');
+            $table->integer('age_of_patient');
             $table->float('length_of_les');
         
            });
